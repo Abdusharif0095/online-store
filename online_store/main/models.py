@@ -1,7 +1,5 @@
 from django.db import models
 
-from django.db import models
-
 
 class Citizen(models.Model):
     import_id = models.IntegerField()

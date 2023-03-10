@@ -209,7 +209,6 @@ def change_citizen_data(request, import_id, citizen_id):
             data={"data": citizen_to_dict(citizen)}
         )
     except Exception as e:
-        print(e)
         return bad_request
 
 
@@ -267,7 +266,6 @@ def get_import_citizens_birthsdays(request, import_id):
             data={"data": presents_in_every_month},
         )
     except Exception as e:
-        print(e)
         return bad_request
 
 
@@ -301,5 +299,4 @@ def get_percentile_age(request, import_id):
             safe=False
         )
     except Exception as e:
-        print(e)
         return bad_request

@@ -54,8 +54,6 @@ def citizen_to_dict(citizen):
 
 @csrf_exempt
 def add_imports(request):
-    global counter
-    check_time_out(counter)
     try:
         data = json.loads(request.body.decode())
         new_import = Import()
@@ -93,7 +91,8 @@ def add_imports(request):
                     relatives=json.dumps(relatives))
                 new_citizen.save()
                 new_import.citizens.add(new_citizen)
-                counter += 1
+            else:
+                return bad_request
         new_import.save()
         return created_request
     except Exception as e:
@@ -102,23 +101,18 @@ def add_imports(request):
 
 @csrf_exempt
 def change_citizen_data(request, import_id, citizen_id):
-    global counter
-    check_time_out(counter)
+    if not checkers.isRightId(import_id) or not checkers.isRightId(citizen_id):
+        return bad_request
     try:
         data = json.loads(request.body.decode())
         fields_check = {
-            "town": checkers.isRightCharField,
-            "street": checkers.isRightCharField,
-            "building": checkers.isRightCharField,
-            "apartment": checkers.isRightApartment,
-            "name": checkers.isRightName,
-            "birth_date": checkers.isRightDate,
-            "gender": checkers.isRightGender,
-            "relatives": checkers.isRightRelativesList
+            "town": 1, "street": 1, "building": 1, "apartment": 1,
+            "name": 1, "birth_date": 1, "gender": 1, "relatives": 1
         }
 
         import_citizens = Import.objects.filter(id=import_id).first().citizens.all()
         citizen = import_citizens.filter(citizen_id=citizen_id).first()
+        # citizen = Citizen.objects(import_id=import_id, citizen_id=citizen_id)
 
         if citizen is None:
             return bad_request
@@ -128,43 +122,43 @@ def change_citizen_data(request, import_id, citizen_id):
                 return bad_request
 
         if "town" in data:
-            if fields_check["town"](data["town"]):
+            if checkers.isRightCharField(data["town"]):
                 citizen.town = data["town"]
             else:
                 return bad_request
 
         if "street" in data:
-            if fields_check["street"](data["street"]):
+            if checkers.isRightCharField(data["street"]):
                 citizen.street = data["street"]
             else:
                 return bad_request
 
         if "building" in data:
-            if fields_check["building"](data["building"]):
+            if checkers.isRightCharField(data["building"]):
                 citizen.building = data["building"]
             else:
                 return bad_request
 
         if "apartment" in data:
-            if fields_check["apartment"](data["apartment"]):
+            if checkers.isRightApartment(data["apartment"]):
                 citizen.apartment = data["apartment"]
             else:
                 return bad_request
 
         if "name" in data:
-            if fields_check["name"](data["name"]):
+            if checkers.isRightName(data["name"]):
                 citizen.name = data["name"]
             else:
                 return bad_request
 
         if "birth_date" in data:
-            if fields_check["name"](data["name"]):
+            if checkers.isRightDate(data["name"]):
                 citizen.birth_date = checkers.getRightDate(data["birth_date"])
             else:
                 return bad_request
 
         if "gender" in data:
-            if fields_check["gender"](data["gender"]):
+            if checkers.isRightGender(data["gender"]):
                 citizen.gender = data["gender"]
             else:
                 return bad_request
@@ -173,7 +167,7 @@ def change_citizen_data(request, import_id, citizen_id):
             new_relatives = data["relatives"]
             old_relatives = json.loads(citizen.relatives)["citizen_ids"]
 
-            if not fields_check["relatives"](new_relatives):
+            if not checkers.isRightRelativesList(new_relatives):
                 return bad_request
 
             if list(set(new_relatives)) != new_relatives:
@@ -203,7 +197,6 @@ def change_citizen_data(request, import_id, citizen_id):
             }
             citizen.relatives = json.dumps(new_res)
             citizen.save()
-        print(citizen_to_dict(citizen))
         return JsonResponse(
             status=200,
             data={"data": citizen_to_dict(citizen)}
@@ -213,8 +206,6 @@ def change_citizen_data(request, import_id, citizen_id):
 
 
 def get_citizens(request, import_id):
-    global counter
-    check_time_out(counter)
     try:
         import_citizens = Import.objects.filter(id=import_id).first().citizens.all()
         data = []
@@ -223,16 +214,17 @@ def get_citizens(request, import_id):
 
         return JsonResponse(
             status=200,
-            data={"data": data},
+            data={
+                "data": data
+            },
             safe=False
         )
     except Exception as e:
+        print(e)
         return bad_request
 
 
-def get_import_citizens_birthsdays(request, import_id):
-    global counter
-    check_time_out(counter)
+def get_import_citizens_birthdays(request, import_id):
     try:
         import_citizens = Import.objects.filter(id=import_id).first().citizens.all()
         presents_in_every_month = {}
@@ -266,12 +258,11 @@ def get_import_citizens_birthsdays(request, import_id):
             data={"data": presents_in_every_month},
         )
     except Exception as e:
+        print(e)
         return bad_request
 
 
 def get_percentile_age(request, import_id):
-    global counter
-    check_time_out(counter)
     try:
         import_citizens = Import.objects.filter(id=import_id).first().citizens.all()
         town_ages = defaultdict(list)
@@ -287,7 +278,6 @@ def get_percentile_age(request, import_id):
             }
 
             for percent in [50, 75, 99]:
-                print(ages, percent)
                 result_dict[f"p{percent}"] = numpy.percentile(ages, percent, interpolation="linear")
             result_list.append(result_dict)
 

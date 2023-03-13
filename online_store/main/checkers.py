@@ -18,6 +18,7 @@ def isRightApartment(number):
 
 
 def isRightName(name):
+    if name == "": return False
     for char in name:
         if char != ' ' and not char.isalpha():
             return False

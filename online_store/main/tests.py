@@ -3,6 +3,7 @@ import json
 import random
 from django.test import TestCase
 from django.urls import reverse
+from .models import *
 
 
 curDir = os.getcwd()
@@ -128,7 +129,6 @@ class ServerTestCase(TestCase):
             data=json.dumps(data),
             content_type="application/json"
         )
-
         self.assertEqual(response.status_code, 200)
 
     def test_patch_change_citizen_errors(self):
@@ -149,6 +149,20 @@ class ServerTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+        response = self.client.patch(
+            "/imports/-1/citizens/1",
+            data=json.dumps(data),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.patch(
+            "/imports/1/citizens/-1",
+            data=json.dumps(data),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_get_import_citizens(self):
         """
@@ -181,13 +195,32 @@ class ServerTestCase(TestCase):
 
         self.test_post_add_import()
 
-        response = self.client.get("imports/1/citizens/birthdays")
+        # print(Import.objects.all().first())
+        response = self.client.get(
+            "/imports/1/citizens/birthdays"
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_get_import_citizens_birthdays_error(self):
         self.test_post_add_import()
 
         response = self.client.get(
-            "imports/-1/citizens/birthdays"
+            "/imports/-1/citizens/birthdays"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_import_town_percentile_age(self):
+        self.test_post_add_import()
+
+        response = self.client.get(
+            "/imports/1/towns/stat/percentile/age"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_import_town_percentile_age_error(self):
+        self.test_post_add_import()
+
+        response = self.client.get(
+            "/imports/-1/towns/stat/percentile/age"
         )
         self.assertEqual(response.status_code, 404)

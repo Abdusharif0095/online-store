@@ -15,31 +15,31 @@ The service implements the following handlers:
 ```
 .
 ├── online-store
-     └── main
-          └── migrations
-          ├── test_data
-          ├── __init__.py
-          ├── admin.py
-          ├── apps.py
-          ├── checkers.py
-          ├── models.py
-          ├── tests.py
-          ├── urls.py
-          └── views.py
-     ├── online_store
-          └── __init__.py
-          ├── asgi.py
-          ├── settings.py
-          ├── urls.py
-          └── wsgi.py
-     ├── Dockerfile
-     ├── db.sqlite3
-     ├── docker-compose.test.yml
-     ├── docker-compose.yml
-     ├── manage.py
-     ├── requirements.txt
-     ├── run_app.sh
-     └── run_tests.sh
+|     └── main
+|     |     └── migrations
+|     |     ├── test_data
+|     |     ├── __init__.py
+|     |     ├── admin.py
+|     |     ├── apps.py
+|     |     ├── checkers.py
+|     |     ├── models.py
+|     |     ├── tests.py
+|     |     ├── urls.py
+|     |     └── views.py
+|     ├── online_store
+|     |     └── __init__.py
+|     |     ├── asgi.py
+|     |     ├── settings.py
+|     |     ├── urls.py
+|     |     └── wsgi.py
+|     ├── Dockerfile
+|     ├── db.sqlite3
+|     ├── docker-compose.test.yml
+|     ├── docker-compose.yml
+|     ├── manage.py
+|     ├── requirements.txt
+|     ├── run_app.sh
+|     └── run_tests.sh
 ├── README.md
 └── TASK.pdf
 ```

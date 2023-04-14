@@ -48,7 +48,7 @@ The service implements the following handlers:
 - Run the command `./run_app.sh`;
 - After 2 first steps, the application will start listening for requests at `0.0.0.0:8080`.
 # To run tests you should follow these commands:
-- Give permission to execute the script `chmod +x run_test.sh`;
+- Give permission to execute the script `chmod +x run_tests.sh`;
 - Run the command `./run_tests.sh`.
 # Technology stack:
 - Docker - is a platform designed to help developers build, share, and run modern applications;

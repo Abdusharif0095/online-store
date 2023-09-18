@@ -43,7 +43,7 @@ The service implements the following handlers:
 ├── README.md
 └── TASK.pdf
 ```
-# To run this REST API Service you should:
+# To run this Service you should:
 - Give permission to execute the script `chmod +x run_app.sh`;
 - Run the command `./run_app.sh`;
 - After 2 first steps, the application will start listening for requests at `0.0.0.0:8080`.
